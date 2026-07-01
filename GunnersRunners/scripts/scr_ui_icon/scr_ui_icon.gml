@@ -43,8 +43,8 @@ function ui_icon_hexagon(_x, _y, _size, _color, _alpha, _filled)
     draw_set_color(_color);
     draw_set_alpha(_alpha);
     
-    var _points_x[6];
-    var _points_y[6];
+    var _points_x = array_create(6, 0);
+    var _points_y = array_create(6, 0);
     for (var i = 0; i < 6; i++)
     {
         var _angle = degtorad(60 * i - 90);
@@ -112,8 +112,8 @@ function ui_icon_star(_x, _y, _size, _color, _alpha)
     var _outer = _s;
     var _inner = _s * 0.4;
     
-    var _px[10];
-    var _py[10];
+    var _px = array_create(10, 0);
+    var _py = array_create(10, 0);
     for (var i = 0; i < _points * 2; i++)
     {
         var _angle = degtorad(90 + (360 / (_points * 2)) * i);
@@ -172,7 +172,7 @@ function ui_icon_wave(_x, _y, _size, _color, _alpha)
     var _gap = _s * 0.6;
     var _start_x = _x - (_bars - 1) * _gap / 2;
     
-    var _heights[3];
+    var _heights = array_create(3, 0);
     _heights[0] = _s * 0.5;
     _heights[1] = _s;
     _heights[2] = _s * 0.7;
