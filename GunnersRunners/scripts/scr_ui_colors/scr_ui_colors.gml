@@ -79,6 +79,22 @@ global.ui_c_wpn_level[6] = make_color_rgb(0, 200, 100);   // L4 CHAIN — Green
 global.ui_c_wpn_level[7] = global.ui_c_neon_gold;          // L7 COMBO — Gold
 global.ui_c_wpn_level[8] = global.ui_c_neon_purple;        // L8 ULTIMATE — Purple
 
+// ---- PALETTE: Power-up Badge Colors ----
+global.ui_c_pu_shield     = make_color_rgb(0, 150, 255);   // SHI — blue
+global.ui_c_pu_speed      = make_color_rgb(0, 200, 100);   // SPD — green
+global.ui_c_pu_rapid      = make_color_rgb(255, 50, 255);  // RAP — magenta
+global.ui_c_pu_mini       = make_color_rgb(255, 140, 190); // MIN — pink
+global.ui_c_pu_ghost      = make_color_rgb(160, 160, 200); // GOS — silver
+global.ui_c_pu_magnet     = make_color_rgb(255, 200, 0);   // MAG — gold
+global.ui_c_pu_score_x2   = make_color_rgb(255, 200, 0);   // x2 — gold
+global.ui_c_pu_score_x3   = make_color_rgb(255, 160, 0);   // x3 — orange-gold
+global.ui_c_pu_slow       = make_color_rgb(50, 80, 255);   // SLO — blue
+global.ui_c_pu_rage       = make_color_rgb(200, 30, 30);   // RGE — red
+global.ui_c_pu_regen      = make_color_rgb(80, 220, 80);   // REG — green
+global.ui_c_pu_trippy     = make_color_rgb(200, 0, 200);   // TRP — purple
+global.ui_c_pu_disco      = make_color_rgb(255, 180, 0);   // DSB — orange
+global.ui_c_pu_rainbow    = make_color_rgb(255, 100, 200); // RNB — pink (changes at runtime)
+
 // ---- Helper: Get HP color based on percentage ----
 function ui_color_hp(_percent)
 {

@@ -232,9 +232,6 @@ switch (global.game_state)
     case "IMPORTING":
         draw_clear(c_black);
 
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
         if (import_state == "MP3_WAITING")
         {
             draw_clear(make_color_rgb(12, 12, 20));
@@ -247,86 +244,42 @@ switch (global.game_state)
             for (var _di = 0; _di < _dot_count; _di++)
                 _dots += ".";
 
-            draw_set_halign(fa_center);
-            draw_set_valign(fa_middle);
+            // Title with glow
+            ui_text_glow(_cx, _cy - 80, "CONVERTING SONG" + _dots, 2.0, global.ui_c_neon_gold, 1, 0.3);
 
-            draw_set_color(make_color_rgb(255, 180, 50));
-            draw_set_alpha(0.12);
-            draw_text_transformed(_cx + 2, _cy - 80 + 2, "CONVERTING SONG" + _dots, 2.0, 2.0, 0);
-            draw_set_alpha(1);
-            draw_set_color(make_color_rgb(255, 180, 50));
-            draw_text_transformed(_cx, _cy - 80, "CONVERTING SONG" + _dots, 2.0, 2.0, 0);
-
+            // Filename
             var _fname = filename_name(import_path);
-            draw_set_color(make_color_rgb(200, 200, 210));
-            draw_set_alpha(0.7);
-            draw_text(_cx, _cy - 30, _fname);
-            draw_set_alpha(1);
+            ui_text_outlined(_cx, _cy - 30, _fname, global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 0.7);
 
-            var _bar_w = 500;
-            var _bar_h = 16;
-            var _bar_x = _cx - _bar_w / 2;
-            var _bar_y = _cy + 10;
-
-            draw_set_color(make_color_rgb(30, 30, 45));
-            draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, false);
-
+            // Progress bar
             var _show_progress = import_progress;
             if (_show_progress == 0)
                 _show_progress = min(0.95, (import_timer / 600) * 0.95);
+            ui_progress_bar(_cx - 250, _cy + 10, 500, 16, _show_progress, global.ui_c_neon_gold, 1);
 
-            draw_set_color(make_color_rgb(255, 180, 50));
-            draw_rectangle(_bar_x, _bar_y, _bar_x + (_bar_w * _show_progress), _bar_y + _bar_h, false);
+            // Status text
+            ui_text_outlined(_cx, _cy + 35, "Analyzing audio data...", global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 0.8);
 
-            draw_set_color(make_color_rgb(60, 60, 80));
-            draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, true);
-
-            draw_set_color(c_white);
-            draw_set_alpha(0.8);
-            draw_text(_cx, _bar_y + _bar_h + 25, "Analyzing audio data...");
-            draw_set_alpha(1);
-
+            // Help text if stuck
             if (import_timer > 600)
-            {
-                draw_set_color(make_color_rgb(120, 120, 140));
-                draw_set_alpha(0.5);
-                draw_text(_cx, _cy + 100, "If stuck, run start_converter.bat");
-                draw_set_alpha(1);
-            }
+                ui_text_outlined(_cx, _cy + 100, "If stuck, run start_converter.bat", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.5);
 
-            draw_set_color(make_color_rgb(100, 100, 120));
-            draw_set_alpha(0.4);
-            draw_text(_cx, room_height - 40, "[ESC] Cancel");
-            draw_set_alpha(1);
+            // Cancel
+            ui_text_outlined(_cx, room_height - 40, "[ESC] Cancel", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.4);
         }
         else
         {
-            draw_set_color(make_color_rgb(255, 200, 80));
-            draw_text_transformed(room_width / 2, 200, "IMPORTING SONG...", 1.5, 1.5, 0);
+            ui_text_glow(room_width / 2, 200, "IMPORTING SONG...", 1.5, global.ui_c_neon_gold, 1, 0.3);
 
             if (import_state == "COPYING")
             {
-                draw_set_color(make_color_rgb(200, 200, 200));
-                draw_text(room_width / 2, 280, "Copying file...");
+                ui_text_outlined(room_width / 2, 280, "Copying file...", global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 1);
             }
             else if (import_state == "ANALYZING")
             {
-                var _bar_w = 600;
-                var _bar_h = 24;
-                var _bar_x = (room_width - _bar_w) / 2;
-                var _bar_y = 270;
-
-                draw_set_color(make_color_rgb(40, 40, 40));
-                draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, false);
-
-                draw_set_color(make_color_rgb(255, 200, 80));
-                draw_rectangle(_bar_x, _bar_y, _bar_x + (_bar_w * import_progress), _bar_y + _bar_h, false);
-
-                draw_set_color(c_white);
-                draw_text(room_width / 2, _bar_y + 50, string(floor(import_progress * 100)) + "%");
-
-                draw_set_color(make_color_rgb(150, 150, 150));
-                draw_text(room_width / 2, 340, "Analyzing audio data...");
+                ui_progress_bar((room_width - 600) / 2, 270, 600, 24, import_progress, global.ui_c_neon_gold, 1);
+                ui_text_outlined(room_width / 2, 320, string(floor(import_progress * 100)) + "%", global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 1);
+                ui_text_outlined(room_width / 2, 340, "Analyzing audio data...", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 1);
             }
         }
         break;
@@ -334,31 +287,19 @@ switch (global.game_state)
     case "ANALYZING":
         draw_clear(c_black);
 
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
-        draw_set_color(make_color_rgb(100, 200, 255));
-        draw_text_transformed(room_width / 2, 100, "ANALYZING...", 1.5, 1.5, 0);
+        ui_text_glow(room_width / 2, 100, "ANALYZING...", 1.5, global.ui_c_neon_cyan, 1, 0.3);
 
         if (instance_exists(obj_rhythm))
         {
             var _prog = obj_rhythm.analysis_progress;
-            var _bar_w = 600;
-            var _bar_h = 24;
-            var _bar_x = (room_width - _bar_w) / 2;
-            var _bar_y = 200;
 
-            draw_set_color(make_color_rgb(40, 40, 40));
-            draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, false);
+            // Progress bar
+            ui_progress_bar((room_width - 600) / 2, 200, 600, 24, _prog, global.ui_c_neon_green, 1);
 
-            draw_set_color(make_color_rgb(100, 255, 100));
-            draw_rectangle(_bar_x, _bar_y, _bar_x + (_bar_w * _prog), _bar_y + _bar_h, false);
+            // Percentage
+            ui_text_outlined(room_width / 2, 250, string(floor(_prog * 100)) + "%", global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 0.7);
 
-            draw_set_color(make_color_rgb(255, 255, 255));
-            draw_set_alpha(0.7);
-            draw_text(room_width / 2, _bar_y + 50, string(floor(_prog * 100)) + "%");
-            draw_set_alpha(1);
-
+            // Energy profile visualization
             if (array_length(obj_rhythm.analysis_profile) > 0)
             {
                 var _profile = obj_rhythm.analysis_profile;
@@ -367,17 +308,19 @@ switch (global.game_state)
                 var _wave_h = 180;
                 var _wave_y = 320;
 
+                // Border
                 draw_set_alpha(0.2);
-                draw_set_color(make_color_rgb(100, 200, 255));
+                draw_set_color(global.ui_c_neon_cyan);
                 draw_rectangle(_wave_x, _wave_y, _wave_x + _wave_w, _wave_y + _wave_h, true);
                 draw_set_alpha(1);
 
+                // Profile bars
                 var _drawn = min(array_length(_profile), floor(_prog * array_length(_profile)));
                 for (var i = 0; i < _drawn; i++)
                 {
                     var _px = _wave_x + (i / array_length(_profile)) * _wave_w;
                     var _ph = _profile[i] * _wave_h;
-                    draw_set_color(make_color_rgb(100, 200, 255));
+                    draw_set_color(global.ui_c_neon_cyan);
                     draw_line_width(_px, _wave_y + _wave_h, _px, _wave_y + _wave_h - _ph, 2);
                 }
             }
@@ -387,61 +330,54 @@ switch (global.game_state)
     case "RESULTS":
         draw_clear(c_black);
 
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
-        draw_set_color(make_color_rgb(255, 200, 50));
-        draw_text_transformed(room_width / 2, 50, "ANALYSIS COMPLETE", 1.5, 1.5, 0);
+        // Title
+        ui_text_glow(room_width / 2, 50, "ANALYSIS COMPLETE", 1.5, global.ui_c_neon_gold, 1, 0.3);
 
         if (global.level_data != -1)
         {
             var _ly = 120;
             var _sp = 36;
 
-            draw_set_color(make_color_rgb(100, 200, 255));
-            draw_text(room_width / 2, _ly, "BPM: " + string(global.bpm));
+            // Stats
+            ui_text_outlined(room_width / 2, _ly, "BPM: " + string(global.bpm), global.ui_text_body, global.ui_c_neon_cyan, global.ui_c_void_black, 1);
             _ly += _sp;
 
-            draw_set_color(c_white);
-            draw_text(room_width / 2, _ly, "DURATION: " + string(floor(global.level_data.song_duration)) + "s");
+            ui_text_outlined(room_width / 2, _ly, "DURATION: " + string(floor(global.level_data.song_duration)) + "s", global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 1);
             _ly += _sp;
 
-            draw_text(room_width / 2, _ly, "WAVES: " + string(global.level_data.total_waves));
+            ui_text_outlined(room_width / 2, _ly, "WAVES: " + string(global.level_data.total_waves), global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 1);
             _ly += _sp;
 
             if (global.level_data.boss_wave > 0)
             {
-                draw_set_color(make_color_rgb(255, 50, 50));
-                draw_text(room_width / 2, _ly, "BOSS: WAVE " + string(global.level_data.boss_wave));
+                ui_text_outlined(room_width / 2, _ly, "BOSS: WAVE " + string(global.level_data.boss_wave), global.ui_text_body, global.ui_c_neon_red, global.ui_c_void_black, 1);
             }
             _ly += _sp + 10;
 
-            draw_set_color(make_color_rgb(100, 100, 100));
-            draw_text(room_width / 2, _ly, "--- STRUCTURE ---");
+            // Structure header
+            ui_text_outlined(room_width / 2, _ly, "--- STRUCTURE ---", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.5);
             _ly += 20;
 
+            // Wave structure
             for (var i = 0; i < array_length(global.level_data.waves) && i < 10; i++)
             {
                 var _w = global.level_data.waves[i];
-                var _col = c_white;
-                if (_w.is_boss) _col = make_color_rgb(255, 50, 50);
-                else if (_w.section_type == "DROP") _col = make_color_rgb(255, 200, 50);
-                else if (_w.section_type == "BUILDUP") _col = make_color_rgb(100, 200, 255);
-                else if (_w.section_type == "INTRO") _col = make_color_rgb(150, 150, 150);
-                else if (_w.section_type == "BREAK") _col = make_color_rgb(200, 100, 255);
+                var _col = global.ui_c_white;
+                if (_w.is_boss) _col = global.ui_c_neon_red;
+                else if (_w.section_type == "DROP") _col = global.ui_c_neon_gold;
+                else if (_w.section_type == "BUILDUP") _col = global.ui_c_neon_cyan;
+                else if (_w.section_type == "INTRO") _col = global.ui_c_ash;
+                else if (_w.section_type == "BREAK") _col = global.ui_c_neon_purple;
 
-                draw_set_color(_col);
                 var _label = "W" + string(_w.number) + " " + _w.section_type;
                 if (_w.is_boss) _label += " [BOSS]";
-                draw_text(room_width / 2, _ly, _label);
+                ui_text_outlined(room_width / 2, _ly, _label, global.ui_text_body, _col, global.ui_c_void_black, 1);
                 _ly += 26;
             }
 
+            // Prompt
             _ly += 20;
-            draw_set_color(make_color_rgb(100, 255, 100));
-            draw_set_alpha(0.4 + sin(current_time / 300) * 0.4);
-            draw_text(room_width / 2, _ly, "PRESS ENTER TO START");
-            draw_set_alpha(1);
+            ui_text_glow(room_width / 2, _ly, "PRESS ENTER TO START", 1, global.ui_c_neon_green, 0.4 + sin(current_time / 300) * 0.4, 0.3);
         }
         break;
 
@@ -636,76 +572,44 @@ switch (global.game_state)
 
         var _margin = 16;
 
-        scr_draw_panel(_margin - 6, _margin - 4, _margin + 160, _margin + 100, 0.55);
+        // ---- HUD: Score Panel (top-left) ----
+        ui_panel_hud(_margin - 6, _margin - 4, _margin + 160, _margin + 100, 0.55);
 
-        draw_set_halign(fa_left);
-        draw_set_valign(fa_top);
-        scr_draw_text_outlined(_margin, _margin, "SCORE", make_color_rgb(255, 200, 50), c_black, 1, 1, 1);
-        scr_draw_text_outlined(_margin, _margin + 18, string(floor(global.score_display)), c_white, c_black, 1, 1, 1);
+        ui_text_outlined(_margin, _margin, "SCORE", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 1);
+        ui_text_outlined(_margin, _margin + 18, string(floor(global.score_display)), global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 1);
 
         if (instance_exists(obj_player) && !obj_player.dead)
         {
+            // ---- HP Bar ----
             var _bar_x = _margin;
             var _bar_y = _margin + 40;
             var _bar_w = 120;
-            var _bar_h = 14;
-            var _hp_pct = (obj_player.hp / obj_player.max_hp) * 100;
+            var _hp_pct = obj_player.hp / obj_player.max_hp;
 
-            scr_draw_text_outlined(_bar_x, _bar_y - 14, "HP", make_color_rgb(180, 180, 180), c_black, 0.7, 1, 1);
+            ui_text_outlined(_bar_x, _bar_y - 14, "HP", global.ui_text_micro, global.ui_c_ash, global.ui_c_void_black, 0.7);
+            ui_hp_bar(_bar_x, _bar_y, _bar_w, 14, _hp_pct, 1);
 
-            draw_set_alpha(0.4);
-            draw_set_color(c_dkgray);
-            draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, false);
-            draw_set_alpha(1);
-
-            var _hp_color = (_hp_pct > 60) ? c_lime : ((_hp_pct > 30) ? c_yellow : c_red);
-            draw_set_alpha(0.9);
-            draw_set_color(_hp_color);
-            draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w * (_hp_pct / 100), _bar_y + _bar_h, false);
-            draw_set_alpha(1);
-
-            draw_set_alpha(0.3);
-            draw_set_color(c_white);
-            draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w * (_hp_pct / 100), _bar_y + 2, false);
-            draw_set_alpha(1);
-
+            // ---- Weapon Display ----
             var _wl_eff = weapon_get_effective_level();
             var _wl_col = weapon_get_level_color(_wl_eff);
             var _wl_name = weapon_get_level_name(_wl_eff);
             var _wl_label = "WPN LV." + string(_wl_eff);
             if (global.weapon_temp >= 0) _wl_label += " [TEMP]";
-            scr_draw_text_outlined(_bar_x, _bar_y + 22, _wl_label, _wl_col, c_black, 0.8, 1, 1);
-            draw_set_alpha(0.6);
-            draw_set_color(_wl_col);
-            draw_text(_bar_x + 80, _bar_y + 22, _wl_name);
-            draw_set_alpha(1);
+            ui_text_outlined(_bar_x, _bar_y + 22, _wl_label, global.ui_text_micro, _wl_col, global.ui_c_void_black, 0.8);
+            ui_text_outlined(_bar_x + 80, _bar_y + 22, _wl_name, global.ui_text_micro, _wl_col, global.ui_c_void_black, 0.6);
 
+            // ---- Band Bars (Bass/Mids/Highs) ----
             var _band_y = _bar_y + 38;
             var _band_w = 80;
             var _band_h = 5;
 
-            draw_set_alpha(0.5);
-            draw_set_color(make_color_rgb(220, 40, 40));
-            draw_rectangle(_bar_x, _band_y, _bar_x + _band_w * _bass, _band_y + _band_h, false);
-            draw_set_color(c_dkgray);
-            draw_rectangle(_bar_x + _band_w * _bass, _band_y, _bar_x + _band_w, _band_y + _band_h, false);
+            ui_progress_bar(_bar_x, _band_y, _band_w, _band_h, _bass, global.ui_c_neon_red, 0.5);
+            ui_progress_bar(_bar_x, _band_y + 8, _band_w, _band_h, _mids, global.ui_c_neon_green, 0.5);
+            ui_progress_bar(_bar_x, _band_y + 16, _band_w, _band_h, _highs, make_color_rgb(80, 120, 255), 0.5);
 
-            draw_set_color(make_color_rgb(40, 220, 120));
-            draw_rectangle(_bar_x, _band_y + 8, _bar_x + _band_w * _mids, _band_y + 8 + _band_h, false);
-            draw_set_color(c_dkgray);
-            draw_rectangle(_bar_x + _band_w * _mids, _band_y + 8, _bar_x + _band_w, _band_y + 8 + _band_h, false);
-
-            draw_set_color(make_color_rgb(80, 120, 255));
-            draw_rectangle(_bar_x, _band_y + 16, _bar_x + _band_w * _highs, _band_y + 16 + _band_h, false);
-            draw_set_color(c_dkgray);
-            draw_rectangle(_bar_x + _band_w * _highs, _band_y + 16, _bar_x + _band_w, _band_y + 16 + _band_h, false);
-
-            draw_set_alpha(0.5);
-            draw_set_color(c_white);
-            draw_text(_bar_x + _band_w + 8, _band_y - 1, "B");
-            draw_text(_bar_x + _band_w + 8, _band_y + 7, "M");
-            draw_text(_bar_x + _band_w + 8, _band_y + 15, "H");
-            draw_set_alpha(1);
+            ui_text_outlined(_bar_x + _band_w + 8, _band_y - 1, "B", global.ui_text_micro, global.ui_c_ash, global.ui_c_void_black, 0.5);
+            ui_text_outlined(_bar_x + _band_w + 8, _band_y + 7, "M", global.ui_text_micro, global.ui_c_ash, global.ui_c_void_black, 0.5);
+            ui_text_outlined(_bar_x + _band_w + 8, _band_y + 15, "H", global.ui_text_micro, global.ui_c_ash, global.ui_c_void_black, 0.5);
         }
 
         if (instance_exists(obj_player) && obj_player.is_grabbed)
@@ -719,150 +623,128 @@ switch (global.game_state)
             var _gb_x = (room_width - _gb_w) / 2;
             var _gb_y = room_height - 60;
 
-            draw_set_alpha(0.7);
-            draw_set_color(c_dkgray);
-            draw_rectangle(_gb_x - 2, _gb_y - 2, _gb_x + _gb_w + 2, _gb_y + _gb_h + 2, false);
+            // Panel background
+            ui_panel_solid(_gb_x - 4, _gb_y - 4, _gb_x + _gb_w + 4, _gb_y + _gb_h + 4, 0.7);
 
-            draw_set_alpha(0.85);
+            // Progress bar with danger→warning→success gradient
             var _gb_col = _progress < 0.5
-                ? make_color_rgb(255, 80, 50)
-                : (_progress < 0.8 ? make_color_rgb(255, 180, 50) : make_color_rgb(80, 255, 120));
-            draw_set_color(_gb_col);
-            draw_rectangle(_gb_x, _gb_y, _gb_x + _gb_w * _progress, _gb_y + _gb_h, false);
+                ? global.ui_c_neon_red
+                : (_progress < 0.8 ? global.ui_c_neon_orange : global.ui_c_neon_green);
+            ui_progress_bar(_gb_x, _gb_y, _gb_w, _gb_h, _progress, _gb_col, 0.85);
 
-            draw_set_alpha(0.5);
-            draw_set_color(c_black);
-            draw_rectangle(_gb_x + _gb_w * _progress, _gb_y, _gb_x + _gb_w, _gb_y + _gb_h, false);
-
-            draw_set_halign(fa_center);
-            draw_set_valign(fa_middle);
-            draw_set_alpha(0.9);
-            draw_set_color(c_white);
-            draw_text(_gb_x + _gb_w / 2, _gb_y + _gb_h / 2, "SHAKE TO ESCAPE  A D A D A D");
-            draw_set_alpha(1);
-
-            draw_set_halign(fa_left);
-            draw_set_valign(fa_top);
+            // Label
+            ui_text_align_center();
+            ui_text_outlined(_gb_x + _gb_w / 2, _gb_y + _gb_h / 2, "SHAKE TO ESCAPE  A D A D A D", global.ui_text_small, global.ui_c_white, global.ui_c_void_black, 0.9);
+            ui_text_align_reset();
         }
 
         if (global.weapon_choosing)
         {
+            // Overlay
             draw_set_alpha(0.6);
-            draw_set_color(c_black);
+            draw_set_color(global.ui_c_void_black);
             draw_rectangle(0, 0, room_width, room_height, false);
             draw_set_alpha(1);
 
             var _cx = room_width / 2;
             var _cy = room_height / 2;
 
-            draw_set_halign(fa_center);
-            draw_set_valign(fa_middle);
+            ui_text_align_center();
 
-            draw_set_alpha(0.9);
-            draw_set_color(c_white);
-            draw_text(_cx, _cy - 60, "CHOOSE YOUR PATH");
-            draw_set_alpha(0.5);
-            draw_text(_cx, _cy - 40, "Weapon Level 2 reached!");
+            // Title
+            ui_text_outlined(_cx, _cy - 60, "CHOOSE YOUR PATH", global.ui_text_h3, global.ui_c_white, global.ui_c_void_black, 0.9);
+            ui_text_outlined(_cx, _cy - 40, "Weapon Level 2 reached!", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.5);
 
-            draw_set_alpha(0.9);
-            draw_set_color(make_color_rgb(180, 80, 255));
-            draw_rectangle(_cx - 200, _cy - 10, _cx - 30, _cy + 40, false);
-            draw_set_color(c_white);
-            draw_text(_cx - 115, _cy + 15, "[A] OFFENSIVE");
-            draw_set_alpha(0.6);
-            draw_text(_cx - 115, _cy + 30, "SPREAD > SHOTGUN");
+            // Offensive button (A)
+            var _btn_a_x1 = _cx - 200;
+            var _btn_a_y1 = _cy - 10;
+            var _btn_a_x2 = _cx - 30;
+            var _btn_a_y2 = _cy + 40;
+            ui_panel_solid(_btn_a_x1, _btn_a_y1, _btn_a_x2, _btn_a_y2, 0.9);
+            ui_glow_border(_btn_a_x1, _btn_a_y1, _btn_a_x2, _btn_a_y2, global.ui_c_neon_purple, 6, 0.3);
+            ui_text_outlined(_cx - 115, _cy + 15, "[A] OFFENSIVE", global.ui_text_small, global.ui_c_neon_purple, global.ui_c_void_black, 0.9);
+            ui_text_outlined(_cx - 115, _cy + 30, "SPREAD > SHOTGUN", global.ui_text_micro, global.ui_c_ash, global.ui_c_void_black, 0.6);
 
-            draw_set_alpha(0.9);
-            draw_set_color(make_color_rgb(0, 200, 200));
-            draw_rectangle(_cx + 30, _cy - 10, _cx + 200, _cy + 40, false);
-            draw_set_color(c_white);
-            draw_text(_cx + 115, _cy + 15, "[D] CONTROL");
-            draw_set_alpha(0.6);
-            draw_text(_cx + 115, _cy + 30, "HOMING > CHAIN");
+            // Control button (D)
+            var _btn_d_x1 = _cx + 30;
+            var _btn_d_y1 = _cy - 10;
+            var _btn_d_x2 = _cx + 200;
+            var _btn_d_y2 = _cy + 40;
+            ui_panel_solid(_btn_d_x1, _btn_d_y1, _btn_d_x2, _btn_d_y2, 0.9);
+            ui_glow_border(_btn_d_x1, _btn_d_y1, _btn_d_x2, _btn_d_y2, global.ui_c_neon_cyan, 6, 0.3);
+            ui_text_outlined(_cx + 115, _cy + 15, "[D] CONTROL", global.ui_text_small, global.ui_c_neon_cyan, global.ui_c_void_black, 0.9);
+            ui_text_outlined(_cx + 115, _cy + 30, "HOMING > CHAIN", global.ui_text_micro, global.ui_c_ash, global.ui_c_void_black, 0.6);
 
-            draw_set_alpha(0.4 + sin(current_time * 0.005) * 0.3);
-            draw_set_color(c_yellow);
-            draw_text(_cx, _cy + 70, "Press A or D to choose");
+            // Prompt
+            ui_text_outlined(_cx, _cy + 70, "Press A or D to choose", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.4 + sin(current_time * 0.005) * 0.3);
 
-            draw_set_alpha(1);
-            draw_set_halign(fa_left);
-            draw_set_valign(fa_top);
+            ui_text_align_reset();
         }
 
-        draw_set_halign(fa_right);
-        draw_set_valign(fa_top);
-
+        // ---- HUD: Wave Panel (top-right) ----
         var _rx = room_width - _margin;
 
-        scr_draw_panel(_rx - 136, _margin - 4, _rx + 6, _margin + 76, 0.55);
+        ui_panel_hud(_rx - 136, _margin - 4, _rx + 6, _margin + 76, 0.55);
 
-        scr_draw_text_outlined(_rx, _margin, "WAVE", make_color_rgb(100, 200, 255), c_black, 1, 1, 1);
-        scr_draw_text_outlined(_rx, _margin + 16, string(global.wave), c_white, c_black, 1, 1, 1);
+        ui_text_outlined(_rx, _margin, "WAVE", global.ui_text_small, global.ui_c_neon_cyan, global.ui_c_void_black, 1);
+        ui_text_outlined(_rx, _margin + 16, string(global.wave), global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 1);
 
-        draw_set_halign(fa_right);
-        draw_set_valign(fa_top);
-        draw_set_alpha(0.8);
-        draw_set_color(make_color_rgb(_pal_r + 80, _pal_g + 80, _pal_b + 80));
-        draw_text(_rx, _margin + 34, _sec);
-        draw_set_alpha(1);
+        ui_text_outlined(_rx, _margin + 34, _sec, global.ui_text_micro, make_color_rgb(_pal_r + 80, _pal_g + 80, _pal_b + 80), global.ui_c_void_black, 0.8);
+        ui_text_outlined(_rx, _margin + 52, string(global.bpm) + " BPM", global.ui_text_micro, global.ui_c_neon_purple, global.ui_c_void_black, 0.6);
 
-        draw_set_color(make_color_rgb(200, 100, 255));
-        draw_set_alpha(0.6);
-        draw_text(_rx, _margin + 52, string(global.bpm) + " BPM");
-        draw_set_alpha(1);
-
+        // ---- HUD: Combo Display ----
         if (global.combo_alpha > 0 && global.combo_display > 1)
         {
-            draw_set_halign(fa_center);
-            draw_set_valign(fa_middle);
-
+            ui_text_align_center();
             var _combo_x = room_width / 2;
             var _combo_y = 60;
-            var _combo_scale = 1.3 + (global.combo_display * 0.1);
+            var _combo_color = ui_color_combo(global.combo_display);
 
+            // Combo background
             draw_set_alpha(global.combo_alpha * 0.4);
-            draw_set_color(make_color_rgb(255, 200, 0));
+            draw_set_color(_combo_color);
             draw_rectangle(_combo_x - 70, _combo_y - 16, _combo_x + 70, _combo_y + 16, false);
-
-            draw_set_alpha(global.combo_alpha);
-            draw_set_color(c_white);
-            draw_text_transformed(_combo_x, _combo_y, "x" + string(global.combo_display), _combo_scale, _combo_scale, 0);
             draw_set_alpha(1);
+
+            // Combo text
+            var _combo_scale = 1.3 + (global.combo_display * 0.1);
+            ui_text_glow(_combo_x, _combo_y, "x" + string(global.combo_display), _combo_scale, global.ui_c_white, global.combo_alpha, 0.3);
+            ui_text_align_reset();
         }
 
         if (global.wave_announce_timer > 0)
         {
-            draw_set_halign(fa_center);
-            draw_set_valign(fa_middle);
-
             var _announce_alpha = 1;
             if (global.wave_announce_timer > 100)
                 _announce_alpha = (120 - global.wave_announce_timer) / 20;
             else if (global.wave_announce_timer < 20)
                 _announce_alpha = global.wave_announce_timer / 20;
 
+            // Background overlay
             draw_set_alpha(_announce_alpha * 0.6);
-            draw_set_color(c_black);
+            draw_set_color(global.ui_c_void_black);
             draw_rectangle(0, room_height / 2 - 50, room_width, room_height / 2 + 50, false);
 
+            // Section color tint
             draw_set_alpha(_announce_alpha * 0.3);
             draw_set_color(make_color_rgb(_pal_r, _pal_g, _pal_b));
             draw_rectangle(0, room_height / 2 - 50, room_width, room_height / 2 + 50, false);
+            draw_set_alpha(1);
 
-            draw_set_alpha(_announce_alpha);
-            draw_set_color(make_color_rgb(255, 200, 50));
-            draw_text_transformed(room_width / 2, room_height / 2 - 5, "WAVE " + string(global.wave_announce), 2.0, 2.0, 0);
+            // Wave number
+            ui_text_align_center();
+            ui_text_glow(room_width / 2, room_height / 2 - 5, "WAVE " + string(global.wave_announce), 2.0, global.ui_c_neon_gold, _announce_alpha, 0.5);
 
+            // Boss warning
             if (instance_exists(obj_rhythm) && global.level_data != -1)
             {
                 var _widx = global.current_wave_index;
                 if (_widx < array_length(global.level_data.waves) && global.level_data.waves[_widx].is_boss)
                 {
-                    draw_set_color(make_color_rgb(255, 50, 50));
-                    draw_text_transformed(room_width / 2, room_height / 2 + 30, "!! BOSS !!", 1.5, 1.5, 0);
+                    ui_text_glow(room_width / 2, room_height / 2 + 30, "!! BOSS !!", 1.5, global.ui_c_neon_red, _announce_alpha, 0.5);
                 }
             }
-            draw_set_alpha(1);
+            ui_text_align_reset();
         }
 
         if (instance_exists(obj_player) && !obj_player.dead)
@@ -885,91 +767,91 @@ switch (global.game_state)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "SHI", make_color_rgb(0, 150, 255), c_white, string(ceil(obj_player.powerup_shield_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "SHI", global.ui_c_pu_shield, global.ui_c_white, string(ceil(obj_player.powerup_shield_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_speed)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "SPD", make_color_rgb(0, 200, 100), c_white, string(ceil(obj_player.powerup_speed_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "SPD", global.ui_c_pu_speed, global.ui_c_white, string(ceil(obj_player.powerup_speed_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_rapid)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "RAP", make_color_rgb(255, 50, 255), c_white, string(ceil(obj_player.powerup_rapid_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "RAP", global.ui_c_pu_rapid, global.ui_c_white, string(ceil(obj_player.powerup_rapid_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_mini)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "MIN", make_color_rgb(255, 140, 190), c_black, string(ceil(obj_player.powerup_mini_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "MIN", global.ui_c_pu_mini, global.ui_c_void_black, string(ceil(obj_player.powerup_mini_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_ghost)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "GOS", make_color_rgb(160, 160, 200), c_black, string(ceil(obj_player.powerup_ghost_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "GOS", global.ui_c_pu_ghost, global.ui_c_void_black, string(ceil(obj_player.powerup_ghost_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_magnet)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "MAG", make_color_rgb(255, 200, 0), c_black, string(ceil(obj_player.powerup_magnet_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "MAG", global.ui_c_pu_magnet, global.ui_c_void_black, string(ceil(obj_player.powerup_magnet_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_score_x2)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "x2", make_color_rgb(255, 200, 0), c_black, string(ceil(obj_player.powerup_score_x2_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "x2", global.ui_c_pu_score_x2, global.ui_c_void_black, string(ceil(obj_player.powerup_score_x2_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_score_x3)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "x3", make_color_rgb(255, 160, 0), c_black, string(ceil(obj_player.powerup_score_x3_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "x3", global.ui_c_pu_score_x3, global.ui_c_void_black, string(ceil(obj_player.powerup_score_x3_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_time_slow)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "SLO", make_color_rgb(50, 80, 255), c_white, string(ceil(obj_player.powerup_time_slow_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "SLO", global.ui_c_pu_slow, global.ui_c_white, string(ceil(obj_player.powerup_time_slow_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_rage)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "RGE", make_color_rgb(200, 30, 30), c_white, string(ceil(obj_player.powerup_rage_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "RGE", global.ui_c_pu_rage, global.ui_c_white, string(ceil(obj_player.powerup_rage_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_regen)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "REG", make_color_rgb(80, 220, 80), c_black, string(ceil(obj_player.powerup_regen_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "REG", global.ui_c_pu_regen, global.ui_c_void_black, string(ceil(obj_player.powerup_regen_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_trippy)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "TRP", make_color_rgb(200, 0, 200), c_white, string(ceil(obj_player.powerup_trippy_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "TRP", global.ui_c_pu_trippy, global.ui_c_white, string(ceil(obj_player.powerup_trippy_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_disco)
             {
                 var _tx = (_pu_i < 20) ? _pu_x + (_pu_i * 52) : _pu_x + (_pu_i2 * 52);
                 var _ty = (_pu_i < 20) ? _pu_y : _pu_row2_y;
-                scr_draw_powerup_badge(_tx, _ty, "DSB", make_color_rgb(255, 180, 0), c_black, string(ceil(obj_player.powerup_disco_timer / 60)), 1);
+                scr_draw_powerup_badge(_tx, _ty, "DSB", global.ui_c_pu_disco, global.ui_c_void_black, string(ceil(obj_player.powerup_disco_timer / 60)), 1);
                 if (_pu_i < 20) _pu_i++; else _pu_i2++;
             }
             if (obj_player.powerup_rainbow)
@@ -1221,8 +1103,7 @@ switch (global.game_state)
                 draw_set_alpha(1);
             }
 
-            draw_set_halign(fa_center);
-            draw_set_valign(fa_middle);
+            ui_text_align_center();
 
             if (countdown_frame < 180)
             {
@@ -1230,25 +1111,22 @@ switch (global.game_state)
                 var _num_scale = lerp(3, 1, min(1, _t_in_number * 3));
                 var _num_alpha = 1;
 
-                var _num_col = c_white;
-                if (countdown_number == 2) _num_col = make_color_rgb(255, 160, 0);
-                else if (countdown_number == 1) _num_col = c_yellow;
-                else if (countdown_number == 0) _num_col = c_lime;
+                var _num_col = global.ui_c_white;
+                if (countdown_number == 2) _num_col = global.ui_c_neon_orange;
+                else if (countdown_number == 1) _num_col = global.ui_c_neon_gold;
+                else if (countdown_number == 0) _num_col = global.ui_c_neon_green;
 
-                draw_set_alpha(_num_alpha);
-                scr_draw_text_outlined(room_width / 2, room_height / 2, string(countdown_number), _num_col, c_black, _num_alpha, _num_scale, _num_scale);
+                ui_text_glow(room_width / 2, room_height / 2, string(countdown_number), _num_scale, _num_col, _num_alpha, 0.5);
             }
             else
             {
                 var _go_t = (countdown_frame - 180) / 30;
                 var _go_scale = lerp(2, 1, min(1, _go_t * 2));
                 var _go_alpha = min(1, _go_t * 3);
-                scr_draw_text_outlined(room_width / 2, room_height / 2, "GO!", c_lime, c_black, _go_alpha, _go_scale, _go_scale);
+                ui_text_glow(room_width / 2, room_height / 2, "GO!", _go_scale, global.ui_c_neon_green, _go_alpha, 0.5);
             }
 
-            draw_set_alpha(1);
-            draw_set_halign(fa_left);
-            draw_set_valign(fa_top);
+            ui_text_align_reset();
         }
         break;
 
