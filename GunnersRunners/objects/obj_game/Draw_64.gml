@@ -3,13 +3,14 @@ draw_set_font(-1);
 switch (global.game_state)
 {
     case "SELECT_MUSIC":
-        draw_clear(make_color_rgb(12, 12, 20));
+        draw_clear(global.ui_c_void_black);
 
         menu_bg_time += 0.016;
         menu_pulse = (menu_pulse + 0.03) mod (pi * 2);
         track_card_alpha = min(1, track_card_alpha + 0.04);
         track_card_slide = lerp(track_card_slide, 0, 0.12);
 
+        // Background particles
         for (var i = 0; i < array_length(menu_particles); i++)
         {
             var _p = menu_particles[i];
@@ -29,63 +30,39 @@ switch (global.game_state)
         }
         draw_set_alpha(1);
 
-        draw_set_color(make_color_rgb(40, 40, 70));
+        // Subtle overlay
+        draw_set_color(global.ui_c_carbon);
         draw_set_alpha(0.15);
         draw_rectangle(0, 0, room_width, room_height, false);
         draw_set_alpha(1);
 
+        // Scanlines
         for (var i = 0; i < 5; i++)
         {
             var _line_y = 100 + i * 130;
             var _line_a = 0.03 + 0.02 * sin(menu_bg_time * 0.8 + i * 0.7);
-            draw_set_color(make_color_rgb(80, 120, 200));
-            draw_set_alpha(_line_a);
-            draw_line_width(0, _line_y, room_width, _line_y, 1);
+            ui_glow_line(0, _line_y, room_width, _line_y, global.ui_c_neon_blue, 1, _line_a);
         }
-        draw_set_alpha(1);
 
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
+        // Title
+        ui_text_align_center();
         var _title_y = 85;
-        draw_set_color(make_color_rgb(255, 40, 40));
-        draw_set_alpha(0.12);
-        draw_text_transformed(room_width / 2 + 2, _title_y + 2, "GUNNERS", 2.8, 2.8, 0);
-        draw_set_alpha(1);
-        draw_set_color(make_color_rgb(255, 60, 60));
-        draw_text_transformed(room_width / 2, _title_y, "GUNNERS", 2.7, 2.7, 0);
+        ui_text_glow(room_width / 2, _title_y, "GUNNERS", 2.7, global.ui_c_neon_red, 1, 0.15 + 0.1 * sin(menu_pulse * 1.5));
+        ui_text_outlined(room_width / 2, _title_y + 52, "RUNNERS", 2.7, global.ui_c_neon_gold, global.ui_c_void_black, 1);
 
-        var _glow_alpha = 0.15 + 0.1 * sin(menu_pulse * 1.5);
-        draw_set_color(make_color_rgb(255, 200, 50));
-        draw_set_alpha(_glow_alpha);
-        draw_text_transformed(room_width / 2, _title_y + 3, "GUNNERS", 2.9, 2.9, 0);
-        draw_set_alpha(1);
+        // Subtitle
+        ui_text_outlined(room_width / 2, _title_y + 88, "- SELECT YOUR TRACK -", global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 0.5);
 
-        draw_set_color(make_color_rgb(255, 200, 50));
-        draw_text_transformed(room_width / 2, _title_y + 52, "RUNNERS", 2.7, 2.7, 0);
-
-        draw_set_color(make_color_rgb(180, 180, 200));
-        draw_set_alpha(0.5);
-        draw_text_transformed(room_width / 2, _title_y + 88, "- SELECT YOUR TRACK -", 0.7, 0.7, 0);
-        draw_set_alpha(1);
-
-        draw_set_color(make_color_rgb(80, 80, 120));
-        draw_line_width(room_width / 2 - 250, _title_y + 108, room_width / 2 + 250, _title_y + 108, 1);
+        // Separator
+        ui_separator(room_width / 2 - 250, _title_y + 108, room_width / 2 + 250, 1);
 
         var _list_top = 230;
         var _card_h = 72;
         var _card_w = 560;
         var _list_h = max_visible * _card_h;
 
-        draw_set_color(c_black);
-        draw_set_alpha(0.25);
-        draw_rectangle(room_width / 2 - _card_w / 2 - 15, _list_top - 15, room_width / 2 + _card_w / 2 + 15, _list_top + _list_h + 15, false);
-        draw_set_alpha(1);
-
-        draw_set_color(make_color_rgb(60, 60, 90));
-        draw_set_alpha(0.3);
-        draw_rectangle(room_width / 2 - _card_w / 2 - 15, _list_top - 15, room_width / 2 + _card_w / 2 + 15, _list_top + _list_h + 15, true);
-        draw_set_alpha(1);
+        // List container panel
+        ui_panel_solid(room_width / 2 - _card_w / 2 - 15, _list_top - 15, room_width / 2 + _card_w / 2 + 15, _list_top + _list_h + 15, 0.35);
 
         var _view_start = scroll_offset;
         var _view_end = min(_view_start + max_visible, array_length(music_names));
@@ -110,25 +87,22 @@ switch (global.game_state)
 
             if (_selected)
             {
+                // Selection glow
                 var _sel_pulse = 0.08 + 0.04 * sin(menu_pulse * 2);
-                draw_set_alpha(_sel_pulse);
-                draw_set_color(make_color_rgb(255, 180, 30));
-                draw_rectangle(_card_x1 - 4, _card_y1 - 4, _card_x2 + 4, _card_y2 + 4, false);
-                draw_set_alpha(1);
+                ui_glow_rect(_card_x1 - 4, _card_y1 - 4, _card_x2 + 4, _card_y2 + 4, global.ui_c_neon_gold, 8, _sel_pulse);
 
-                draw_set_color(make_color_rgb(255, 200, 50));
+                // Selection background
                 draw_set_alpha(0.12);
+                draw_set_color(global.ui_c_neon_gold);
                 draw_rectangle(_card_x1, _card_y1, _card_x2, _card_y2, false);
                 draw_set_alpha(1);
 
-                draw_set_color(make_color_rgb(255, 200, 50));
-                draw_set_alpha(0.6);
-                draw_rectangle(_card_x1, _card_y1, _card_x2, _card_y2, true);
-                draw_set_alpha(1);
+                // Selection border
+                ui_selection_indicator(_card_x1, _card_y1, _card_x2 - _card_x1, _card_y2 - _card_y1, global.ui_c_neon_gold, 0.6, menu_pulse);
             }
             else
             {
-                draw_set_color(make_color_rgb(40, 40, 60));
+                draw_set_color(global.ui_c_steel);
                 draw_set_alpha(0.4);
                 draw_rectangle(_card_x1, _card_y1, _card_x2, _card_y2, true);
                 draw_set_alpha(1);
@@ -139,11 +113,11 @@ switch (global.game_state)
 
             if (_is_importable)
             {
-                var _ic_col = _selected ? make_color_rgb(255, 180, 50) : make_color_rgb(80, 80, 100);
+                var _ic_col = _selected ? global.ui_c_neon_gold : global.ui_c_smoke;
                 draw_set_color(_ic_col);
                 draw_set_alpha(_selected ? 0.8 : 0.4);
                 draw_rectangle(_icon_x - 12, _icon_y - 12, _icon_x + 12, _icon_y + 12, false);
-                draw_set_color(_selected ? c_black : make_color_rgb(50, 50, 60));
+                draw_set_color(_selected ? global.ui_c_void_black : global.ui_c_steel);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
                 draw_text(_icon_x, _icon_y, "♪");
@@ -152,10 +126,10 @@ switch (global.game_state)
             else if (_is_converting)
             {
                 var _spin_alpha = 0.4 + 0.4 * sin(current_time / 200);
-                draw_set_color(make_color_rgb(100, 200, 255));
+                draw_set_color(global.ui_c_neon_cyan);
                 draw_set_alpha(_spin_alpha);
                 draw_rectangle(_icon_x - 12, _icon_y - 12, _icon_x + 12, _icon_y + 12, false);
-                draw_set_color(c_black);
+                draw_set_color(global.ui_c_void_black);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
                 var _spin_chars = ["-", "\\", "|", "/"];
@@ -164,7 +138,7 @@ switch (global.game_state)
             }
             else
             {
-                draw_set_color(make_color_rgb(255, 100, 50));
+                draw_set_color(global.ui_c_neon_orange);
                 draw_set_alpha(0.5);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
@@ -178,13 +152,13 @@ switch (global.game_state)
             var _text_x = _icon_x + 24;
 
             if (_is_converting)
-                draw_set_color(_selected ? make_color_rgb(100, 200, 255) : make_color_rgb(80, 140, 180));
+                draw_set_color(_selected ? global.ui_c_neon_cyan : global.ui_c_steel);
             else if (_is_needs_conv)
-                draw_set_color(_selected ? make_color_rgb(255, 180, 50) : make_color_rgb(150, 100, 40));
+                draw_set_color(_selected ? global.ui_c_neon_orange : global.ui_c_smoke);
             else if (_is_needs_json)
-                draw_set_color(_selected ? make_color_rgb(255, 255, 100) : make_color_rgb(150, 140, 40));
+                draw_set_color(_selected ? global.ui_c_neon_gold : global.ui_c_smoke);
             else
-                draw_set_color(_selected ? c_white : make_color_rgb(130, 130, 140));
+                draw_set_color(_selected ? global.ui_c_white : global.ui_c_ash);
 
             draw_set_alpha(track_card_alpha);
             draw_text(_text_x, _y - 8, _name_clean);
@@ -195,7 +169,7 @@ switch (global.game_state)
                 var _best = highscores_get_best(_song_key);
                 if (_best != -1)
                 {
-                    draw_set_color(make_color_rgb(255, 200, 50));
+                    draw_set_color(global.ui_c_neon_gold);
                     draw_set_alpha(0.45);
                     draw_text(_text_x, _y + 12, "BEST: " + string(_best.score) + "  RANK: " + _best.rank);
                     draw_set_alpha(1);
@@ -209,19 +183,19 @@ switch (global.game_state)
 
             if (_selected && _is_converting)
             {
-                draw_set_color(make_color_rgb(100, 200, 255));
+                draw_set_color(global.ui_c_neon_cyan);
                 draw_set_alpha(0.5 + 0.4 * sin(menu_pulse * 4));
                 draw_text(_card_x2 - 15, _y, "CONVERTING...");
             }
             else if (_selected && _is_importable)
             {
-                draw_set_color(make_color_rgb(255, 200, 80));
+                draw_set_color(global.ui_c_neon_gold);
                 draw_set_alpha(0.7 + 0.3 * sin(menu_pulse * 3));
                 draw_text(_card_x2 - 15, _y, "▶ PLAY");
             }
             else if (_selected && !_is_importable)
             {
-                draw_set_color(make_color_rgb(255, 150, 50));
+                draw_set_color(global.ui_c_neon_orange);
                 draw_set_alpha(0.7 + 0.3 * sin(menu_pulse * 3));
                 draw_text(_card_x2 - 15, _y, "IMPORT");
             }
@@ -232,46 +206,27 @@ switch (global.game_state)
         if (scroll_offset > 0)
         {
             var _arr_a = 0.4 + 0.3 * sin(current_time / 300);
-            draw_set_color(make_color_rgb(180, 180, 200));
-            draw_set_alpha(_arr_a);
-            draw_set_halign(fa_center);
-            draw_text(room_width / 2, _list_top - 20, "▲");
-            draw_set_alpha(1);
+            ui_text_outlined(room_width / 2, _list_top - 20, "▲", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, _arr_a);
         }
 
         var _max_scroll = max(0, array_length(music_names) - max_visible);
         if (scroll_offset < _max_scroll)
         {
             var _arr_a = 0.4 + 0.3 * sin(current_time / 300);
-            draw_set_color(make_color_rgb(180, 180, 200));
-            draw_set_alpha(_arr_a);
-            draw_set_halign(fa_center);
-            draw_text(room_width / 2, _list_top + _list_h + 20, "▼");
-            draw_set_alpha(1);
+            ui_text_outlined(room_width / 2, _list_top + _list_h + 20, "▼", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, _arr_a);
         }
 
         var _footer_y = room_height - 55;
 
-        draw_set_color(make_color_rgb(60, 60, 90));
-        draw_line_width(room_width / 2 - 280, _footer_y - 20, room_width / 2 + 280, _footer_y - 20, 1);
+        // Separator
+        ui_separator(room_width / 2 - 280, _footer_y - 20, room_width / 2 + 280, 1);
 
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
-        draw_set_color(make_color_rgb(160, 160, 180));
-        draw_set_alpha(0.6 + 0.2 * sin(current_time / 500));
-        draw_text(room_width / 2, _footer_y + 5, "[▲▼] Select    [ENTER] Play    [T] Tutorial");
-        draw_set_alpha(1);
-
-        draw_set_color(make_color_rgb(255, 200, 80));
-        draw_set_alpha(0.45 + 0.25 * sin(current_time / 400));
-        draw_text(room_width / 2, _footer_y + 30, "[I] Import WAV / MP3");
-        draw_set_alpha(1);
-
-        draw_set_color(make_color_rgb(60, 60, 80));
-        draw_set_alpha(0.25);
-        draw_text(room_width / 2, _footer_y + 50, "[F1] Debug Overlay    [F11] Fullscreen");
-        draw_set_alpha(1);
+        // Controls
+        ui_text_align_center();
+        ui_text_outlined(room_width / 2, _footer_y + 5, "[▲▼] Select    [ENTER] Play    [T] Tutorial", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.6 + 0.2 * sin(current_time / 500));
+        ui_text_outlined(room_width / 2, _footer_y + 30, "[I] Import WAV / MP3", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.45 + 0.25 * sin(current_time / 400));
+        ui_text_outlined(room_width / 2, _footer_y + 50, "[F1] Debug Overlay    [F11] Fullscreen", global.ui_text_micro, global.ui_c_smoke, global.ui_c_void_black, 0.25);
+        ui_text_align_reset();
         break;
 
     case "IMPORTING":
@@ -1298,110 +1253,98 @@ switch (global.game_state)
         break;
 
     case "PAUSE":
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
-        draw_set_color(c_black);
-        draw_set_alpha(0.7);
+        // Blur overlay
+        draw_set_color(global.ui_c_overlay_pause);
+        draw_set_alpha(0.85);
         draw_rectangle(0, 0, room_width, room_height, false);
         draw_set_alpha(1);
 
-        scr_draw_panel(room_width / 2 - 200, room_height / 2 - 160, room_width / 2 + 200, room_height / 2 + 160, 0.85);
+        // Panel
+        ui_panel_modal(room_width / 2 - 200, room_height / 2 - 160, room_width / 2 + 200, room_height / 2 + 160, 1, global.ui_c_neon_gold);
 
-        draw_set_color(make_color_rgb(255, 200, 50));
-        draw_text_transformed(room_width / 2, room_height / 2 - 130, "PAUSED", 2.0, 2.0, 0);
+        // Title
+        ui_text_align_center();
+        ui_text_glow(room_width / 2, room_height / 2 - 130, "PAUSED", global.ui_text_h2, global.ui_c_neon_gold, 1, 0.3);
 
+        // Stats
         var _py = room_height / 2 - 60;
-        draw_set_color(make_color_rgb(200, 200, 200));
-        draw_text(room_width / 2, _py, "Score: " + string(floor(global.score_display)));
+        ui_text_outlined(room_width / 2, _py, "Score: " + string(floor(global.score_display)), global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 0.9);
         _py += 30;
-        draw_text(room_width / 2, _py, "Wave: " + string(global.wave));
+        ui_text_outlined(room_width / 2, _py, "Wave: " + string(global.wave), global.ui_text_body, global.ui_c_white, global.ui_c_void_black, 0.9);
         _py += 30;
-        draw_text(room_width / 2, _py, "Combo: x" + string(global.max_combo));
+        ui_text_outlined(room_width / 2, _py, "Combo: x" + string(global.max_combo), global.ui_text_body, ui_color_combo(global.max_combo), global.ui_c_void_black, 0.9);
         _py += 50;
 
+        // Controls
         var _pulse_a = 0.5 + sin(current_time / 300) * 0.3;
-
-        draw_set_color(make_color_rgb(100, 255, 100));
-        draw_set_alpha(_pulse_a);
-        draw_text(room_width / 2, _py, "[ESC] Resume");
+        ui_text_outlined(room_width / 2, _py, "[ESC] Resume", global.ui_text_body, global.ui_c_neon_green, global.ui_c_void_black, _pulse_a);
         _py += 30;
-
-        draw_set_color(make_color_rgb(255, 200, 80));
-        draw_text(room_width / 2, _py, "[R] Restart");
+        ui_text_outlined(room_width / 2, _py, "[R] Restart", global.ui_text_body, global.ui_c_neon_gold, global.ui_c_void_black, 0.8);
         _py += 30;
+        ui_text_outlined(room_width / 2, _py, "[Q] Quit to Menu", global.ui_text_body, global.ui_c_neon_red, global.ui_c_void_black, 0.8);
 
-        draw_set_color(make_color_rgb(255, 100, 100));
-        draw_text(room_width / 2, _py, "[Q] Quit to Menu");
-        draw_set_alpha(1);
-
-        draw_set_halign(fa_left);
-        draw_set_valign(fa_top);
+        ui_text_align_reset();
         break;
 
     case "GAME_OVER":
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
-        draw_set_color(c_black);
-        draw_set_alpha(0.8);
+        // Red-tinted overlay
+        draw_set_color(global.ui_c_overlay_gameover);
+        draw_set_alpha(0.90);
         draw_rectangle(0, 0, room_width, room_height, false);
         draw_set_alpha(1);
 
-        scr_draw_panel(room_width / 2 - 220, room_height / 2 - 200, room_width / 2 + 220, room_height / 2 + 200, 0.85);
+        // Panel with red accent
+        ui_panel_modal(room_width / 2 - 220, room_height / 2 - 200, room_width / 2 + 220, room_height / 2 + 200, 1, global.ui_c_neon_red);
 
-        draw_set_color(make_color_rgb(255, 50, 50));
-        draw_text_transformed(room_width / 2, room_height / 2 - 170, "GAME OVER", 2.2, 2.2, 0);
+        // Title with glow
+        ui_text_align_center();
+        ui_text_glow(room_width / 2, room_height / 2 - 170, "GAME OVER", global.ui_text_h1, global.ui_c_neon_red, 1, 0.5);
 
+        // Stats
         var _gy = room_height / 2 - 100;
         var _gl = 30;
 
-        draw_set_color(make_color_rgb(255, 200, 50));
-        draw_text(room_width / 2, _gy, "Score: " + string(floor(global.score)));
+        ui_text_outlined(room_width / 2, _gy, "Score: " + string(floor(global.score)), global.ui_text_body, global.ui_c_neon_gold, global.ui_c_void_black, 1);
         _gy += _gl;
 
-        draw_set_color(make_color_rgb(255, 150, 255));
-        draw_text(room_width / 2, _gy, "Max Combo: x" + string(global.max_combo));
+        ui_text_outlined(room_width / 2, _gy, "Max Combo: x" + string(global.max_combo), global.ui_text_body, global.ui_c_neon_magenta, global.ui_c_void_black, 1);
         _gy += _gl;
 
-        draw_set_color(make_color_rgb(255, 100, 100));
-        draw_text(room_width / 2, _gy, "Enemies: " + string(global.enemies_killed));
+        ui_text_outlined(room_width / 2, _gy, "Enemies: " + string(global.enemies_killed), global.ui_text_body, global.ui_c_neon_red, global.ui_c_void_black, 1);
         _gy += _gl;
 
-        draw_set_color(make_color_rgb(100, 255, 200));
-        draw_text(room_width / 2, _gy, "Power-ups: " + string(global.powerups_collected));
+        ui_text_outlined(room_width / 2, _gy, "Power-ups: " + string(global.powerups_collected), global.ui_text_body, global.ui_c_neon_cyan, global.ui_c_void_black, 1);
         _gy += _gl;
 
         var _wl_eff_go = weapon_get_effective_level();
         var _wl_col_go = weapon_get_level_color(_wl_eff_go);
-        draw_set_color(_wl_col_go);
-        draw_text(room_width / 2, _gy, "Weapon: LV." + string(_wl_eff_go) + " " + weapon_get_level_name(_wl_eff_go));
+        ui_text_outlined(room_width / 2, _gy, "Weapon: LV." + string(_wl_eff_go) + " " + weapon_get_level_name(_wl_eff_go), global.ui_text_body, _wl_col_go, global.ui_c_void_black, 1);
         _gy += _gl;
 
-        draw_set_color(make_color_rgb(200, 200, 200));
-        draw_text(room_width / 2, _gy, "Time: " + highscores_format_time(global.game_time));
+        ui_text_outlined(room_width / 2, _gy, "Time: " + highscores_format_time(global.game_time), global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 0.9);
         _gy += _gl;
 
-        draw_text(room_width / 2, _gy, "Wave: " + string(global.wave));
+        ui_text_outlined(room_width / 2, _gy, "Wave: " + string(global.wave), global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 0.9);
         _gy += _gl + 10;
 
+        // Separator
+        ui_separator(room_width / 2 - 150, _gy, room_width / 2 + 150, 0);
+        _gy += 15;
+
+        // Best score
         var _song_key = highscores_get_song_key(global.selected_music);
         var _best = highscores_get_best(_song_key);
         if (_best != -1)
         {
-            draw_set_color(make_color_rgb(255, 200, 50));
-            draw_set_alpha(0.7);
-            draw_text(room_width / 2, _gy, "BEST: " + string(_best.score) + "  RANK: " + _best.rank);
-            draw_set_alpha(1);
+            ui_text_outlined(room_width / 2, _gy, "BEST: " + string(_best.score) + "  RANK: " + _best.rank, global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.7);
+            _gy += 25;
         }
-        _gy += 30;
 
+        // Achievements
         achievements_check(false);
         if (array_length(global.achievements_this_run) > 0)
         {
-            draw_set_color(make_color_rgb(255, 200, 50));
-            draw_set_alpha(0.8);
-            draw_text(room_width / 2, _gy, "NEW BADGES!");
+            ui_text_outlined(room_width / 2, _gy, "NEW BADGES!", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.8);
             _gy += 20;
             for (var _abi = 0; _abi < min(array_length(global.achievements_this_run), 3); _abi++)
             {
@@ -1409,8 +1352,7 @@ switch (global.game_state)
                 {
                     if (global.achievements[_abj].id == global.achievements_this_run[_abi])
                     {
-                        draw_set_color(global.achievements[_abj].color);
-                        draw_text(room_width / 2, _gy, global.achievements[_abj].name);
+                        ui_text_outlined(room_width / 2, _gy, global.achievements[_abj].name, global.ui_text_small, global.achievements[_abj].color, global.ui_c_void_black, 0.8);
                         _gy += 18;
                         break;
                     }
@@ -1420,105 +1362,88 @@ switch (global.game_state)
             _gy += 5;
         }
 
-        draw_set_color(make_color_rgb(200, 200, 200));
-        draw_set_alpha(0.5 + sin(current_time / 300) * 0.3);
-        draw_text(room_width / 2, _gy, "[ENTER] Retry    [ESC] Menu");
-        draw_set_alpha(1);
+        // Controls
+        ui_text_outlined(room_width / 2, _gy, "[ENTER] Retry    [ESC] Menu", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.5 + sin(current_time / 300) * 0.3);
 
-        draw_set_halign(fa_left);
-        draw_set_valign(fa_top);
+        ui_text_align_reset();
         break;
 
     case "VICTORY":
-        draw_set_halign(fa_center);
-        draw_set_valign(fa_middle);
-
-        draw_set_color(c_black);
-        draw_set_alpha(0.8);
+        // Gold-tinted overlay
+        draw_set_color(global.ui_c_overlay_victory);
+        draw_set_alpha(0.88);
         draw_rectangle(0, 0, room_width, room_height, false);
         draw_set_alpha(1);
 
-        scr_draw_panel(room_width / 2 - 260, room_height / 2 - 260, room_width / 2 + 260, room_height / 2 + 260, 0.85);
+        // Panel with gold accent
+        ui_panel_modal(room_width / 2 - 260, room_height / 2 - 260, room_width / 2 + 260, room_height / 2 + 260, 1, global.ui_c_neon_gold);
 
-        draw_set_color(make_color_rgb(50, 255, 50));
-        draw_text_transformed(room_width / 2, room_height / 2 - 230, "VICTORY!", 2.5, 2.5, 0);
+        // Title with glow
+        ui_text_align_center();
+        ui_text_glow(room_width / 2, room_height / 2 - 230, "VICTORY!", global.ui_text_h1, global.ui_c_neon_green, 1, 0.6);
 
+        // Stats
         var _vy = room_height / 2 - 170;
         var _vl = 28;
 
-        draw_set_color(make_color_rgb(255, 200, 50));
-        draw_text(room_width / 2, _vy, "Score: " + string(floor(global.score)));
+        ui_text_outlined(room_width / 2, _vy, "Score: " + string(floor(global.score)), global.ui_text_body, global.ui_c_neon_gold, global.ui_c_void_black, 1);
         _vy += _vl;
 
-        draw_set_color(make_color_rgb(255, 150, 255));
-        draw_text(room_width / 2, _vy, "Max Combo: x" + string(global.max_combo));
+        ui_text_outlined(room_width / 2, _vy, "Max Combo: x" + string(global.max_combo), global.ui_text_body, global.ui_c_neon_magenta, global.ui_c_void_black, 1);
         _vy += _vl;
 
-        draw_set_color(make_color_rgb(255, 100, 100));
-        draw_text(room_width / 2, _vy, "Enemies: " + string(global.enemies_killed));
+        ui_text_outlined(room_width / 2, _vy, "Enemies: " + string(global.enemies_killed), global.ui_text_body, global.ui_c_neon_red, global.ui_c_void_black, 1);
         _vy += _vl;
 
-        draw_set_color(make_color_rgb(100, 255, 200));
-        draw_text(room_width / 2, _vy, "Power-ups: " + string(global.powerups_collected));
+        ui_text_outlined(room_width / 2, _vy, "Power-ups: " + string(global.powerups_collected), global.ui_text_body, global.ui_c_neon_cyan, global.ui_c_void_black, 1);
         _vy += _vl;
 
         var _wl_eff_v = weapon_get_effective_level();
         var _wl_col_v = weapon_get_level_color(_wl_eff_v);
-        draw_set_color(_wl_col_v);
-        draw_text(room_width / 2, _vy, "Weapon: LV." + string(_wl_eff_v) + " " + weapon_get_level_name(_wl_eff_v));
+        ui_text_outlined(room_width / 2, _vy, "Weapon: LV." + string(_wl_eff_v) + " " + weapon_get_level_name(_wl_eff_v), global.ui_text_body, _wl_col_v, global.ui_c_void_black, 1);
         _vy += _vl;
 
-        draw_set_color(make_color_rgb(200, 200, 200));
-        draw_text(room_width / 2, _vy, "Time: " + highscores_format_time(global.game_time));
+        ui_text_outlined(room_width / 2, _vy, "Time: " + highscores_format_time(global.game_time), global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 0.9);
         _vy += _vl;
 
         var _total_w = 0;
         if (global.level_data != -1)
             _total_w = global.level_data.total_waves;
-        draw_text(room_width / 2, _vy, "Waves: " + string(_total_w) + "/" + string(_total_w));
+        ui_text_outlined(room_width / 2, _vy, "Waves: " + string(_total_w) + "/" + string(_total_w), global.ui_text_body, global.ui_c_ash, global.ui_c_void_black, 0.9);
         _vy += _vl + 8;
 
+        // Separator
+        ui_separator(room_width / 2 - 180, _vy, room_width / 2 + 180, 0);
+        _vy += 15;
+
+        // Rank
         var _song_key = highscores_get_song_key(global.selected_music);
         var _rank = highscores_get_rank(global.score, global.max_combo, true);
         var _is_new = highscores_is_new_record(_song_key, global.score);
 
-        var _rank_col = c_white;
-        if (_rank == "S") _rank_col = make_color_rgb(255, 215, 0);
-        else if (_rank == "A") _rank_col = make_color_rgb(255, 100, 100);
-        else if (_rank == "B") _rank_col = make_color_rgb(100, 200, 255);
-        else if (_rank == "C") _rank_col = make_color_rgb(100, 255, 100);
-        else _rank_col = make_color_rgb(180, 180, 180);
+        ui_text_rank(room_width / 2, _vy + 10, _rank, 1, 2.5);
+        _vy += 45;
 
-        draw_set_color(_rank_col);
-        draw_text_transformed(room_width / 2, _vy, "RANK:  " + _rank, 1.8, 1.8, 0);
-        _vy += 38;
-
+        // New record
         if (_is_new)
         {
-            draw_set_color(make_color_rgb(255, 200, 50));
-            draw_set_alpha(0.6 + sin(current_time / 200) * 0.4);
-            draw_text(room_width / 2, _vy, "NEW RECORD!");
-            draw_set_alpha(1);
+            ui_text_glow(room_width / 2, _vy, "NEW RECORD!", global.ui_text_small, global.ui_c_neon_gold, 0.6 + sin(current_time / 200) * 0.4, 0.5);
         }
         else
         {
             var _best2 = highscores_get_best(_song_key);
             if (_best2 != -1)
             {
-                draw_set_color(make_color_rgb(200, 200, 200));
-                draw_set_alpha(0.6);
-                draw_text(room_width / 2, _vy, "BEST: " + string(_best2.score) + "  RANK: " + _best2.rank);
-                draw_set_alpha(1);
+                ui_text_outlined(room_width / 2, _vy, "BEST: " + string(_best2.score) + "  RANK: " + _best2.rank, global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.6);
             }
         }
         _vy += 28;
 
+        // Achievements
         achievements_check(true);
         if (array_length(global.achievements_this_run) > 0)
         {
-            draw_set_color(make_color_rgb(255, 200, 50));
-            draw_set_alpha(0.9);
-            draw_text(room_width / 2, _vy, "-- NEW BADGES --");
+            ui_text_outlined(room_width / 2, _vy, "-- NEW BADGES --", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.9);
             _vy += 22;
 
             for (var _abi = 0; _abi < min(array_length(global.achievements_this_run), 5); _abi++)
@@ -1536,6 +1461,7 @@ switch (global.game_state)
             achievements_save();
         }
 
+        // Pending badges
         var _pend_count = 0;
         for (var _pi = 0; _pi < array_length(global.achievements); _pi++)
         {
@@ -1543,21 +1469,14 @@ switch (global.game_state)
         }
         if (_pend_count > 0)
         {
-            draw_set_color(make_color_rgb(120, 120, 140));
-            draw_set_alpha(0.5);
-            draw_text(room_width / 2, _vy, string(_pend_count) + " badges remaining");
-            draw_set_alpha(1);
+            ui_text_outlined(room_width / 2, _vy, string(_pend_count) + " badges remaining", global.ui_text_micro, global.ui_c_smoke, global.ui_c_void_black, 0.5);
             _vy += 20;
         }
 
         _vy += 5;
-        draw_set_color(make_color_rgb(200, 200, 200));
-        draw_set_alpha(0.5 + sin(current_time / 300) * 0.3);
-        draw_text(room_width / 2, _vy, "[ENTER] Retry    [ESC] Menu");
-        draw_set_alpha(1);
+        ui_text_outlined(room_width / 2, _vy, "[ENTER] Retry    [ESC] Menu", global.ui_text_small, global.ui_c_ash, global.ui_c_void_black, 0.5 + sin(current_time / 300) * 0.3);
 
-        draw_set_halign(fa_left);
-        draw_set_valign(fa_top);
+        ui_text_align_reset();
         break;
 }
 
