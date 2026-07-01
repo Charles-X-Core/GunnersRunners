@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_highscores",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_highscores",
+  "parent":{
+    "name":"GunnersRunners",
+    "path":"GunnersRunners.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

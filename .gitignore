@@ -1,0 +1,33 @@
+# Gitignore for GunnersRunners
+
+# Large audio files (too big for git)
+*.wav
+*.mp3
+*.ogg
+
+# ffmpeg binary
+ffmpeg.exe
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# GameMaker build artifacts
+*.zip
+*.yyz
+
+# Backup files
+*.bak
+*.tmp
+*.log
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/

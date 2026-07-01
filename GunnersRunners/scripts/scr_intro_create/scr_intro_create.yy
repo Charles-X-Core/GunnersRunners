@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_intro_create",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_intro_create",
+  "parent":{
+    "name":"GunnersRunners",
+    "path":"GunnersRunners.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

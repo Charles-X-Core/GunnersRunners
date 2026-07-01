@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_section_colors",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_section_colors",
+  "parent":{
+    "name":"GunnersRunners",
+    "path":"GunnersRunners.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_screen_shake",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_screen_shake",
+  "parent":{
+    "name":"GunnersRunners",
+    "path":"GunnersRunners.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

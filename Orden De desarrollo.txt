@@ -1,0 +1,104 @@
+🟢 FASE 1 — CORE GAMEPLAY (base divertida)
+
+Objetivo: que jugar ya sea entretenido.
+
+✔ Movimiento de nave (inercia)
+✔ Disparo base
+✔ Enemigos simples
+✔ Colisiones
+✔ Sistema de vida
+✔ Oleadas básicas
+
+👉 Sin UI bonita todavía, solo funcional.
+
+🟡 FASE 2 — RITMO Y DINÁMICA
+
+Objetivo: hacer único el juego.
+
+🎵 Sistema de beat (automático primero)
+👾 Spawn de enemigos con ritmo
+⚡ Eventos musicales (rush, calma)
+💥 efectos sincronizados
+🟠 FASE 3 — VARIEDAD
+
+Objetivo: que no sea aburrido.
+
+🤖 Enemigos con comportamientos distintos
+⚡ Poderes temporales
+👹 mini-boss
+🔵 FASE 4 — INTERFAZ (UI)
+
+Objetivo: que se vea pro.
+
+🧭 Menú principal
+❤️ Barra de vida
+📊 Score visible
+⚡ poderes activos
+🟣 FASE 5 — EXPERIENCIA
+
+Objetivo: pulido.
+
+🌌 fondos animados
+🎵 música por nivel
+💥 sonidos FX
+📈 dificultad progresiva
+⚫ FASE 6 — FUTURO (dejado listo)
+
+(no ahora)
+
+🔐 high score mundial
+🌍 rankings
+🎮 modos de juego
+
+📋 METODOLOGÍA DE TRABAJO ENTRE NOSOTROS
+
+Cada vez haremos:
+
+1️⃣ Diseñamos una mecánica
+
+(te explico qué hará)
+
+2️⃣ La implementamos limpia
+3️⃣ La probamos mentalmente
+4️⃣ La mejoramos
+📦 Organización tipo sprint
+
+Ejemplo:
+
+🕒 Sprint 1 (hoy):
+
+Nave + disparo + enemigo básico
+
+🕒 Sprint 2:
+
+ritmo + spawn musical
+
+🕒 Sprint 3:
+
+poderes
+
+etc.
+
+🧠 Por qué esta metodología es la MEJOR para ti
+
+✅ No te saturas
+✅ Siempre ves progreso
+✅ Fácil corregir
+✅ Escalable
+✅ Profesional
+
+(Y te sirve para portafolio también)
+
+🚀 RESUMEN CLARO
+Orden ideal:
+
+1️⃣ Core gameplay
+2️⃣ Ritmo
+3️⃣ Enemigos variados
+4️⃣ Poderes
+5️⃣ UI
+6️⃣ Pulido
+
+Metodología:
+
+👉 Iterar siempre con versiones jugables
