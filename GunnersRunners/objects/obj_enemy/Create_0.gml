@@ -13,8 +13,8 @@ hp = max(1, floor(1 * _hp_mult));
 speed_val = 1.5 + (_wn * 0.2);
 score_value = 10;
 max_hp = hp;
-shield_hp = 5;
-shield_max_hp = 5;
+shield_hp = 3;
+shield_max_hp = 3;
 shield_regen_timer = 0;
 is_raging = false;
 dash_timer = 0;
@@ -48,11 +48,11 @@ switch (enemy_type)
         score_value = 200;
         break;
     case 4:
-        hp = max(3, floor(12 * _hp_mult));
+        hp = max(3, floor(8 * _hp_mult));
         speed_val = 0.8 + (_wn * 0.06);
         score_value = 300;
-        shield_hp = 5;
-        shield_max_hp = 5;
+        shield_hp = 3;
+        shield_max_hp = 3;
         shield_regen_timer = 0;
         break;
     case 5:

@@ -132,7 +132,9 @@ switch (enemy_type)
         var _sy2 = y + lengthdir_y(_shape_size * 1.4, _shield_dir);
         var _sx3 = x + lengthdir_x(_shape_size * 1.2, _shield_dir + 50);
         var _sy3 = y + lengthdir_y(_shape_size * 1.2, _shield_dir + 50);
-        var _shield_hp_pct = variable_struct_exists(id, "shield_hp") ? shield_hp / 5 : 1;
+        var _shield_hp_val = variable_struct_exists(id, "shield_hp") ? shield_hp : 3;
+        var _shield_max_val = variable_struct_exists(id, "shield_max_hp") ? shield_max_hp : 3;
+        var _shield_hp_pct = _shield_hp_val / _shield_max_val;
         draw_set_alpha(0.4 + _shield_hp_pct * 0.3);
         var _sh_col = merge_color(make_color_rgb(80, 120, 200), make_color_rgb(200, 220, 255), _shield_hp_pct);
         draw_set_color(_sh_col);
@@ -140,6 +142,20 @@ switch (enemy_type)
         draw_set_alpha(0.2);
         draw_rectangle(_sx2 - 24, _sy2 - 8, _sx2 + 24, _sy2 + 8, true);
         draw_set_alpha(1);
+
+        if (_shield_hp_val < _shield_max_val && _shield_hp_val > 0)
+        {
+            var _sbw = 24;
+            var _sbh = 3;
+            var _sbx = x - _sbw / 2;
+            var _sby = _sy2 - 14;
+            draw_set_color(c_dkgray);
+            draw_set_alpha(0.7);
+            draw_rectangle(_sbx, _sby, _sbx + _sbw, _sby + _sbh, false);
+            draw_set_alpha(1);
+            draw_set_color(make_color_rgb(120, 180, 255));
+            draw_rectangle(_sbx, _sby, _sbx + (_sbw * _shield_hp_pct), _sby + _sbh, false);
+        }
         break;
 
     case 5:
@@ -184,7 +200,7 @@ switch (enemy_type)
     case 1: _max_hp = 2; break;
     case 2: _max_hp = 3; break;
     case 3: _max_hp = 6; break;
-    case 4: _max_hp = 12; break;
+    case 4: _max_hp = 8; break;
     case 5: _max_hp = 10; break;
     case 6: _max_hp = 8; break;
     default: _max_hp = 1; break;

@@ -30,6 +30,12 @@ if (defeated)
     }
 
     image_blend = (defeat_timer mod 10 < 5) ? c_red : c_white;
+
+    if (defeat_timer >= 300)
+    {
+        global.boss_defeated = true;
+        instance_destroy();
+    }
     exit;
 }
 

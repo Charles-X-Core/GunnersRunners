@@ -608,6 +608,7 @@ switch (global.game_state)
             if (instance_exists(obj_rhythm))
             {
                 rhythm_stop_music(obj_rhythm);
+                rhythm_cleanup(obj_rhythm);
                 obj_rhythm.analysis_complete = false;
                 rhythm_start_analysis(obj_rhythm, global.selected_music);
             }
@@ -688,6 +689,7 @@ switch (global.game_state)
             if (instance_exists(obj_rhythm))
             {
                 rhythm_stop_music(obj_rhythm);
+                rhythm_cleanup(obj_rhythm);
                 obj_rhythm.analysis_complete = false;
                 rhythm_start_analysis(obj_rhythm, global.selected_music);
             }

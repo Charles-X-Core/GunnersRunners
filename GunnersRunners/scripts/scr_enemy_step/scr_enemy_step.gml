@@ -337,15 +337,15 @@ function scr_enemy_step()
             break;
 
         case 4:
-            if (!variable_instance_exists(id, "shield_hp")) shield_hp = 5;
-            if (!variable_instance_exists(id, "shield_max_hp")) shield_max_hp = 5;
+            if (!variable_instance_exists(id, "shield_hp")) shield_hp = 3;
+            if (!variable_instance_exists(id, "shield_max_hp")) shield_max_hp = 3;
             if (!variable_instance_exists(id, "shield_regen_timer")) shield_regen_timer = 0;
             vspeed = speed_val * 0.5 * _slow_mult;
             hspeed = sin(move_timer * 0.025) * (3 + _energy * 2) * _slow_mult;
             if (variable_struct_exists(id, "shield_regen_timer"))
             {
                 shield_regen_timer++;
-                if (shield_regen_timer >= 300 && shield_hp < shield_max_hp)
+                if (shield_regen_timer >= 600 && shield_hp < shield_max_hp)
                 {
                     shield_hp = min(shield_hp + 1, shield_max_hp);
                     shield_regen_timer = 0;
