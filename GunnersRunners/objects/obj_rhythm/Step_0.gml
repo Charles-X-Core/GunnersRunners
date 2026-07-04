@@ -28,6 +28,27 @@ if (global.game_state == "PLAYING")
 
     rhythm_update_beat(id);
     scr_music_ai_analyze();
+
+    var _current_time_sec = audio_sound_get_track_position(current_sound) / 1000;
+    if (current_sound == -1 || !audio_is_playing(current_sound))
+        _current_time_sec = global.current_beat_index * (60 / global.bpm);
+    scr_audio_director_update(_current_time_sec);
+
+    if (array_length(global.director_events) > 0)
+    {
+        var _slowmo = scr_audio_director_should_slowmo();
+        if (_slowmo && !instance_exists(obj_player) || (instance_exists(obj_player) && !obj_player.powerup_time_slow))
+        {
+            if (_slowmo)
+                global.time_slow = true;
+            else if (!instance_exists(obj_player) || !obj_player.powerup_time_slow)
+                global.time_slow = false;
+        }
+
+        var _zoom_t = scr_audio_director_get_zoom_target();
+        global.ai_camera_zoom_target = _zoom_t;
+    }
+
     scr_music_ai_control_enemies();
     scr_music_ai_control_environment();
     scr_tutorial_update();
@@ -113,7 +134,10 @@ if (global.game_state == "PLAYING")
                             _enemy.hit_timer = 0;
                             _enemy.prev_positions = [];
                             _enemy.trail_counter = 0;
-                            scr_music_ai_enemy_behavior(_enemy);
+                            if (array_length(global.director_events) > 0)
+                                scr_audio_director_get_enemy_behavior(_enemy);
+                            else
+                                scr_music_ai_enemy_behavior(_enemy);
                             global.enemies_alive++;
                         }
                     }

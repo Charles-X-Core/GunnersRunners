@@ -422,11 +422,47 @@ function scr_music_load_analysis_json(_json_path)
     var _smoothed = scr_music_smooth_profile(_energy, 6);
     _smoothed = scr_music_normalize_profile(_smoothed);
 
-    show_debug_message("JSON LOAD v3: BPM=" + string(_bpm) + " Duration=" + string(_duration) +
+    var _events = [];
+    var _phrases = [];
+    var _repetitions = [];
+    var _fills = [];
+    var _silences = [];
+    var _crescendos = [];
+    var _enemy_score = [];
+    var _visual_score = [];
+    var _action_score = [];
+    var _speed_score = [];
+    var _tension_curve = [];
+    var _emotion_curve = [];
+    var _density_curve = [];
+    var _complexity_curve = [];
+    var _motion_curve = [];
+    var _instrument_stems = {};
+
+    if (variable_struct_exists(_data, "events")) _events = _data.events;
+    if (variable_struct_exists(_data, "phrases")) _phrases = _data.phrases;
+    if (variable_struct_exists(_data, "repetitions")) _repetitions = _data.repetitions;
+    if (variable_struct_exists(_data, "fills")) _fills = _data.fills;
+    if (variable_struct_exists(_data, "silences")) _silences = _data.silences;
+    if (variable_struct_exists(_data, "crescendos")) _crescendos = _data.crescendos;
+    if (variable_struct_exists(_data, "enemy_score")) _enemy_score = _data.enemy_score;
+    if (variable_struct_exists(_data, "visual_score")) _visual_score = _data.visual_score;
+    if (variable_struct_exists(_data, "action_score")) _action_score = _data.action_score;
+    if (variable_struct_exists(_data, "speed_score")) _speed_score = _data.speed_score;
+    if (variable_struct_exists(_data, "tension_curve")) _tension_curve = _data.tension_curve;
+    if (variable_struct_exists(_data, "emotion_curve")) _emotion_curve = _data.emotion_curve;
+    if (variable_struct_exists(_data, "density_curve")) _density_curve = _data.density_curve;
+    if (variable_struct_exists(_data, "complexity_curve")) _complexity_curve = _data.complexity_curve;
+    if (variable_struct_exists(_data, "motion_curve")) _motion_curve = _data.motion_curve;
+    if (variable_struct_exists(_data, "instrument_stems")) _instrument_stems = _data.instrument_stems;
+
+    var _version = 3;
+    if (variable_struct_exists(_data, "version")) _version = _data.version;
+
+    show_debug_message("JSON LOAD v" + string(_version) + ": BPM=" + string(_bpm) + " Duration=" + string(_duration) +
         " Sections=" + string(array_length(_sections)) +
         " Beats=" + string(array_length(_beat_times)) +
-        " Onsets=" + string(array_length(_onset_times)) +
-        " Chroma=" + string(array_length(_chroma_data)) +
+        " Events=" + string(array_length(_events)) +
         " DynRange=" + string(_dynamic_range) + "dB");
 
     return {
@@ -452,6 +488,23 @@ function scr_music_load_analysis_json(_json_path)
         onset_power: _onset_power,
         chroma_data: _chroma_data,
         loudness_lufs: _loudness,
-        dynamic_range: _dynamic_range
+        dynamic_range: _dynamic_range,
+        events: _events,
+        phrases: _phrases,
+        repetitions: _repetitions,
+        fills: _fills,
+        silences: _silences,
+        crescendos: _crescendos,
+        enemy_score: _enemy_score,
+        visual_score: _visual_score,
+        action_score: _action_score,
+        speed_score: _speed_score,
+        tension_curve: _tension_curve,
+        emotion_curve: _emotion_curve,
+        density_curve: _density_curve,
+        complexity_curve: _complexity_curve,
+        motion_curve: _motion_curve,
+        instrument_stems: _instrument_stems,
+        version: _version
     };
 }

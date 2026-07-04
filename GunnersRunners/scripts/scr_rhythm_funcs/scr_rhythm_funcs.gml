@@ -50,6 +50,10 @@ function rhythm_start_analysis(_inst, _filename)
             _inst.analysis_complete = true;
             _inst.analysis_done = true;
 
+            scr_audio_director_init();
+            scr_audio_director_load(_json_data);
+            show_debug_message("DIRECTOR: Loaded " + string(array_length(global.director_events)) + " events from timeline");
+
             _inst.wav_cache = scr_music_load_wav(_filename);
             if (_inst.wav_cache == -1)
             {

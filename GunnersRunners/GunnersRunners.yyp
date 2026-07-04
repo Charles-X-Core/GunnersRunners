@@ -39,6 +39,7 @@
     {"id":{"name":"obj_score_popup","path":"objects/obj_score_popup/obj_score_popup.yy",},},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
     {"id":{"name":"scr_achievements","path":"scripts/scr_achievements/scr_achievements.yy",},},
+    {"id":{"name":"scr_audio_director","path":"scripts/scr_audio_director/scr_audio_director.yy",},},
     {"id":{"name":"scr_bullet_step","path":"scripts/scr_bullet_step/scr_bullet_step.yy",},},
     {"id":{"name":"scr_choreography","path":"scripts/scr_choreography/scr_choreography.yy",},},
     {"id":{"name":"scr_collision","path":"scripts/scr_collision/scr_collision.yy",},},

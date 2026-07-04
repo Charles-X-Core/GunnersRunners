@@ -1,0 +1,9 @@
+{
+  "$GMScript":"",
+  "%Name":"scr_audio_director",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_audio_director",
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
