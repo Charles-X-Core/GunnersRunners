@@ -3,6 +3,7 @@ if (keyboard_check_pressed(vk_f11))
     if (!window_get_fullscreen())
     {
         window_set_fullscreen(true);
+        surface_resize(application_surface, 1280, 720);
     }
     else
     {
@@ -88,6 +89,42 @@ if (global.fade_alpha > 0 || global.fade_target > 0)
 
 if (global.fade_alpha > 0 && global.fade_alpha < 1)
     exit;
+
+// ---- Menu state updates (moved from Draw_64 — Draw must never mutate game logic) ----
+if (global.game_state == "SELECT_MUSIC")
+{
+    menu_bg_time += 0.016;
+    menu_pulse = (menu_pulse + 0.03) mod (pi * 2);
+    track_card_alpha = min(1, track_card_alpha + 0.04);
+    track_card_slide = lerp(track_card_slide, 0, 0.12);
+    for (var i = 0; i < array_length(menu_particles); i++)
+    {
+        var _p = menu_particles[i];
+        _p.life++;
+        _p.x += _p.vx + sin(_p.life * 0.02) * 0.3;
+        _p.y += _p.vy;
+        if (_p.y < -10 || _p.life > 700)
+        {
+            _p.x = random(room_width);
+            _p.y = room_height + 10;
+            _p.life = 0;
+        }
+    }
+}
+
+// ---- Play state updates (moved from Draw_64) ----
+if (global.game_state == "PLAYING")
+{
+    if (global.nuke_flash > 0.01)
+        global.nuke_flash *= 0.9;
+
+    if (instance_exists(obj_rhythm))
+    {
+        var _ring_speed = 0.03 + global.music_energy * 0.04;
+        obj_rhythm.pulse_ring += _ring_speed;
+        if (obj_rhythm.pulse_ring >= 1) obj_rhythm.pulse_ring = 0;
+    }
+}
 
 switch (global.game_state)
 {
@@ -345,6 +382,7 @@ switch (global.game_state)
             global.weapon_temp_timer = 0;
             global.weapon_choosing = false;
             global.boss_defeated = false;
+            _achievements_checked = false;
             global.stats_elites_killed = 0;
             global.stats_hp_min = 6;
             global.stats_weapon_max_level = 1;
@@ -590,6 +628,13 @@ switch (global.game_state)
         break;
 
     case "GAME_OVER":
+        if (!variable_instance_exists(id, "_achievements_checked") || !_achievements_checked)
+        {
+            _achievements_checked = true;
+            achievements_check(false);
+            if (array_length(global.achievements_this_run) > 0)
+                achievements_save();
+        }
         if (keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("R")))
         {
             var _song_key = highscores_get_song_key(global.selected_music);
@@ -633,6 +678,7 @@ switch (global.game_state)
             global.weapon_temp_timer = 0;
             global.weapon_choosing = false;
             global.boss_defeated = false;
+            _achievements_checked = false;
             global.stats_elites_killed = 0;
             global.stats_hp_min = 6;
             global.stats_weapon_max_level = 1;
@@ -671,6 +717,13 @@ switch (global.game_state)
         break;
 
     case "VICTORY":
+        if (!variable_instance_exists(id, "_achievements_checked") || !_achievements_checked)
+        {
+            _achievements_checked = true;
+            achievements_check(true);
+            if (array_length(global.achievements_this_run) > 0)
+                achievements_save();
+        }
         if (keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("R")))
         {
             var _song_key = highscores_get_song_key(global.selected_music);
@@ -714,6 +767,7 @@ switch (global.game_state)
             global.weapon_temp_timer = 0;
             global.weapon_choosing = false;
             global.boss_defeated = false;
+            _achievements_checked = false;
             global.stats_elites_killed = 0;
             global.stats_hp_min = 6;
             global.stats_weapon_max_level = 1;

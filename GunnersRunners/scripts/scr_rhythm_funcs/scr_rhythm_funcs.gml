@@ -351,10 +351,13 @@ function rhythm_update_beat(_inst)
 
     if (array_length(global.beat_times) > 0)
     {
+        var _beat_limit = 0;
         while (global.current_beat_index < array_length(global.beat_times) - 1
-            && global.beat_times[global.current_beat_index + 1] <= _pos_sec)
+            && global.beat_times[global.current_beat_index + 1] <= _pos_sec
+            && _beat_limit < 50)
         {
             global.current_beat_index++;
+            _beat_limit++;
         }
 
         if (global.current_beat_index != _inst.last_beat_fired_index)
@@ -382,10 +385,13 @@ function rhythm_update_beat(_inst)
 
     if (array_length(global.onset_times) > 0)
     {
+        var _onset_limit = 0;
         while (global.current_onset_index < array_length(global.onset_times) - 1
-            && global.onset_times[global.current_onset_index + 1] <= _pos_sec)
+            && global.onset_times[global.current_onset_index + 1] <= _pos_sec
+            && _onset_limit < 100)
         {
             global.current_onset_index++;
+            _onset_limit++;
         }
 
         var _ot = global.onset_times[global.current_onset_index];

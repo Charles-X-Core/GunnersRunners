@@ -5,24 +5,10 @@ switch (global.game_state)
     case "SELECT_MUSIC":
         draw_clear(global.ui_c_void_black);
 
-        menu_bg_time += 0.016;
-        menu_pulse = (menu_pulse + 0.03) mod (pi * 2);
-        track_card_alpha = min(1, track_card_alpha + 0.04);
-        track_card_slide = lerp(track_card_slide, 0, 0.12);
-
-        // Background particles
+        // Background particles (read-only — updates moved to Step_0)
         for (var i = 0; i < array_length(menu_particles); i++)
         {
             var _p = menu_particles[i];
-            _p.life++;
-            _p.x += _p.vx + sin(_p.life * 0.02) * 0.3;
-            _p.y += _p.vy;
-            if (_p.y < -10 || _p.life > 700)
-            {
-                _p.x = random(room_width);
-                _p.y = room_height + 10;
-                _p.life = 0;
-            }
             var _pa = _p.alpha * (0.5 + 0.5 * sin(_p.life * 0.05));
             draw_set_color(_p.color);
             draw_set_alpha(_pa);
@@ -467,13 +453,8 @@ switch (global.game_state)
 
         if (instance_exists(obj_rhythm))
         {
-            var _ring_speed = 4 + _energy * 6 + _bass * 4;
-            obj_rhythm.pulse_ring += _ring_speed;
-            if (obj_rhythm.pulse_ring > room_width)
-                obj_rhythm.pulse_ring = 0;
-
-            var _ring_r = obj_rhythm.pulse_ring;
-            var _ring_a = max(0, 1 - (_ring_r / room_width)) * 0.12 * (0.5 + _energy);
+            var _ring_r = obj_rhythm.pulse_ring * room_width;
+            var _ring_a = max(0, 1 - obj_rhythm.pulse_ring) * 0.12 * (0.5 + _energy);
             draw_set_alpha(_ring_a);
             draw_set_color(make_color_rgb(_pal_r, _pal_g, _pal_b));
             draw_circle(room_width / 2, room_height / 2, _ring_r, true);
@@ -877,8 +858,6 @@ switch (global.game_state)
             draw_rectangle(0, 0, room_width, room_height, false);
             gpu_set_blendmode(bm_normal);
             draw_set_alpha(1);
-
-            global.nuke_flash *= 0.9;
         }
 
         if (global.time_slow)
@@ -890,7 +869,7 @@ switch (global.game_state)
 
             draw_set_alpha(0.04);
             draw_set_color(make_color_rgb(150, 200, 255));
-            for (var _sl = 0; _sl < room_height; _sl += 4)
+            for (var _sl = 0; _sl < room_height; _sl += 12)
             {
                 draw_rectangle(0, _sl, room_width, _sl + 1, false);
             }
@@ -926,13 +905,13 @@ switch (global.game_state)
             var _beat_sync = global.on_beat ? 1.0 : 0.5;
 
             gpu_set_blendmode(bm_add);
-            for (var _di = 0; _di < 12; _di++)
+            for (var _di = 0; _di < 8; _di++)
             {
                 var _da = (0.08 + _energy * 0.12) * _beat_sync;
                 draw_set_alpha(_da);
-                var _dc = make_color_hsv((_disco_t * 40 + _di * 30) mod 255, 255, 255);
+                var _dc = make_color_hsv((_disco_t * 40 + _di * 45) mod 255, 255, 255);
                 draw_set_color(_dc);
-                var _dang = _disco_t * 2 + _di * 30;
+                var _dang = _disco_t * 2 + _di * 45;
                 var _len = room_width * (0.8 + _beat_sync * 0.2);
                 draw_line_width(room_width / 2, room_height / 2,
                     room_width / 2 + lengthdir_x(_len, _dang),
@@ -942,9 +921,9 @@ switch (global.game_state)
             gpu_set_blendmode(bm_normal);
             draw_set_alpha(1);
 
-            for (var _dj = 0; _dj < 6; _dj++)
+            for (var _dj = 0; _dj < 4; _dj++)
             {
-                var _dang2 = _disco_t * 1.5 + _dj * 60;
+                var _dang2 = _disco_t * 1.5 + _dj * 90;
                 var _rad = 150 + sin(_disco_t * 2 + _dj) * 50;
                 var _djx = room_width / 2 + lengthdir_x(_rad, _dang2);
                 var _djy = room_height / 2 + lengthdir_y(_rad, _dang2);
@@ -979,12 +958,12 @@ switch (global.game_state)
                 make_color_hsv((_rb_t * 80 + 42) mod 255, 255, 255),
                 false);
 
-            for (var _ri = 0; _ri < 16; _ri++)
+            for (var _ri = 0; _ri < 10; _ri++)
             {
                 var _ra = (0.06 + _energy * 0.15) * _rb_int;
                 draw_set_alpha(_ra);
-                draw_set_color(make_color_hsv((_rb_t * 50 + _ri * 22) mod 255, 255, 255));
-                var _rang = _rb_t * 3 + _ri * 22.5;
+                draw_set_color(make_color_hsv((_rb_t * 50 + _ri * 36) mod 255, 255, 255));
+                var _rang = _rb_t * 3 + _ri * 36;
                 var _rlen = room_width * (0.9 + _rb_sync * 0.1);
                 draw_line_width(room_width / 2, room_height / 2,
                     room_width / 2 + lengthdir_x(_rlen, _rang),
@@ -992,10 +971,10 @@ switch (global.game_state)
                     1 + _energy * 4);
             }
 
-            for (var _si = 0; _si < 24; _si++)
+            for (var _si = 0; _si < 12; _si++)
             {
-                var _sang = _rb_t * 2 + _si * 15;
-                var _srad = 50 + _si * 8 + sin(_rb_t + _si * 0.5) * 20;
+                var _sang = _rb_t * 2 + _si * 30;
+                var _srad = 50 + _si * 15 + sin(_rb_t + _si * 0.5) * 20;
                 var _sx = room_width / 2 + lengthdir_x(_srad, _sang);
                 var _sy = room_height / 2 + lengthdir_y(_srad, _sang);
                 draw_set_alpha(0.2 * _rb_int);
@@ -1218,8 +1197,7 @@ switch (global.game_state)
             _gy += 25;
         }
 
-        // Achievements
-        achievements_check(false);
+        // Achievements (checked in Step_0 — Draw only renders)
         if (array_length(global.achievements_this_run) > 0)
         {
             ui_text_outlined(room_width / 2, _gy, "NEW BADGES!", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.8);
@@ -1236,7 +1214,6 @@ switch (global.game_state)
                     }
                 }
             }
-            achievements_save();
             _gy += 5;
         }
 
@@ -1317,8 +1294,7 @@ switch (global.game_state)
         }
         _vy += 28;
 
-        // Achievements
-        achievements_check(true);
+        // Achievements (checked in Step_0 — Draw only renders)
         if (array_length(global.achievements_this_run) > 0)
         {
             ui_text_outlined(room_width / 2, _vy, "-- NEW BADGES --", global.ui_text_small, global.ui_c_neon_gold, global.ui_c_void_black, 0.9);
@@ -1336,7 +1312,6 @@ switch (global.game_state)
                 }
             }
             _vy += 35;
-            achievements_save();
         }
 
         // Pending badges

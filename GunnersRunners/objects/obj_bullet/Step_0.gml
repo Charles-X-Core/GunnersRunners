@@ -18,6 +18,13 @@ if (homing)
     }
 }
 
+bullet_life++;
+if (bullet_life >= bullet_max_life)
+{
+    instance_destroy();
+    exit;
+}
+
 if (x < -16 || x > room_width + 16 || y < -16 || y > room_height + 16)
 {
     instance_destroy();

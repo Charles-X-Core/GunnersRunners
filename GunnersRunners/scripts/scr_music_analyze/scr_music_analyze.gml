@@ -43,6 +43,8 @@ function scr_music_load_wav(_filename)
         repeat(4) _chunk_id += chr(buffer_read(_buff, buffer_u8));
         var _chunk_size = buffer_read(_buff, buffer_u32);
 
+        if (_chunk_size == 0) break;
+
         switch (_chunk_id)
         {
             case "fmt ":
