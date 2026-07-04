@@ -68,7 +68,7 @@ function scr_player_shoot()
                         _b.vspeed = lengthdir_y(bullet_speed * 0.6, angle + (i * 20));
                         _b.image_angle = angle + (i * 20) - 90;
                         _b.homing = true;
-                        _b.damage = floor(_dmg * 0.8);
+                        _b.damage = max(1, floor(_dmg * 0.8));
                     }
                 }
                 break;
@@ -95,7 +95,7 @@ function scr_player_shoot()
                         _b.vspeed = lengthdir_y(bullet_speed * 0.5, angle + (i * 18));
                         _b.image_angle = angle + (i * 18) - 90;
                         _b.homing = true;
-                        _b.damage = floor(_dmg * 0.8);
+                        _b.damage = max(1, floor(_dmg * 0.8));
                     }
                 }
                 break;
@@ -110,7 +110,7 @@ function scr_player_shoot()
                         _b.vspeed = lengthdir_y(bullet_speed * 0.5, angle + (i * 15));
                         _b.image_angle = angle + (i * 15) - 90;
                         _b.homing = true;
-                        _b.damage = floor(_dmg * 0.8);
+                        _b.damage = max(1, floor(_dmg * 0.8));
                     }
                 }
                 else
